@@ -7,8 +7,9 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 
+// Route kiểm tra hoạt động
 app.get('/', (req, res) => {
-  res.send('🟢 Proxy Bybit đang chạy!');
+  res.send('✅ Proxy Bybit hoạt động!');
 });
 
 app.get('/api/bybit-price', async (req, res) => {
@@ -37,18 +38,18 @@ app.get('/api/bybit-price', async (req, res) => {
       }
     );
 
-    const data = response.data.result?.items;
-    if (data && data.length > 0) {
-      res.json({ price: data[0].price });
+    const items = response.data?.result?.items;
+    if (items && items.length > 0) {
+      res.json({ price: items[0].price });
     } else {
       res.status(404).json({ error: 'Không tìm thấy dữ liệu' });
     }
   } catch (error) {
-    console.error('Lỗi khi gọi API Bybit:', error.message);
+    console.error('Lỗi gọi API Bybit:', error.message);
     res.status(500).json({ error: 'Lỗi máy chủ', detail: error.message });
   }
 });
 
 app.listen(port, () => {
-  console.log(`✅ Bybit proxy đang chạy tại http://localhost:${port}`);
+  console.log(`🟢 Proxy đang chạy tại http://localhost:${port}`);
 });
