@@ -7,6 +7,10 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send('🟢 Proxy Bybit đang chạy!');
+});
+
 app.get('/api/bybit-price', async (req, res) => {
   try {
     const { fiat = 'VND', side = 'buy' } = req.query;
@@ -33,28 +37,15 @@ app.get('/api/bybit-price', async (req, res) => {
       }
     );
 
-    const result = response.data?.result;
-    const items = result?.items;
-
-    if (items && items.length > 0) {
-      res.json({ price: items[0].price });
+    const data = response.data.result?.items;
+    if (data && data.length > 0) {
+      res.json({ price: data[0].price });
     } else {
-      console.warn('Không tìm thấy dữ liệu từ Bybit:', response.data);
-      res.status(404).json({ error: 'Không tìm thấy dữ liệu từ Bybit' });
+      res.status(404).json({ error: 'Không tìm thấy dữ liệu' });
     }
   } catch (error) {
-    console.error('❌ Lỗi khi gọi API Bybit:');
-    if (error.response) {
-      console.error('Status:', error.response.status);
-      console.error('Data:', error.response.data);
-    } else {
-      console.error(error.message);
-    }
-
-    res.status(500).json({
-      error: 'Lỗi máy chủ',
-      detail: error.response?.data || error.message
-    });
+    console.error('Lỗi khi gọi API Bybit:', error.message);
+    res.status(500).json({ error: 'Lỗi máy chủ', detail: error.message });
   }
 });
 
