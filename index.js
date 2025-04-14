@@ -1,7 +1,6 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -11,7 +10,7 @@ app.get('/api/bybit-price', async (req, res) => {
   try {
     const { fiat = 'VND', side = 'buy' } = req.query;
     const response = await axios.get(
-      `https://api2.bybit.com/fiat/otc/item/online`,
+      'https://api2.bybit.com/fiat/otc/item/online',
       {
         params: {
           userId: '',
@@ -21,6 +20,9 @@ app.get('/api/bybit-price', async (req, res) => {
           side: side === 'buy' ? 1 : 0,
           size: 10,
           page: 1
+        },
+        headers: {
+          'User-Agent': 'Mozilla/5.0'
         }
       }
     );
